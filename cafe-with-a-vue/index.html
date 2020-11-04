@@ -18,29 +18,34 @@
         everyone can't get enough!
       </p>
 
-      <section class="menu">
+      <section class="menu">        
         <h2>Menu</h2>
-        <div class="menu-item">
-          <img
-            class="menu-item__image"
-            src="https://via.placeholder.com/300x150"
-            alt=""
-          />
-          <div>
-            <h3>Item Name</h3>
-            <p>In Stock</p>
-            <p>Out of Stock</p>
-            <div>
-              <label for="add-item-quantity">Quantity:</label>
-              <input id="add-item-quantity" type="number" />
-              <button>Add to Shopping Cart</button>
+        <ul>
+          <li v-for="item in simpleMenu">
+            <div class="menu-item">
+              <img
+                class="menu-item__image"
+                v-bind:src="item.image.source"
+                v-bind:alt="item.image.alt"
+              />
+              <div>
+                <h3>{{item.name}}</h3>
+                <p v-show="item.inStock">In Stock</p>
+                <p v-show="!item.inStock">Out of Stock</p>
+                <div>
+                  <label for="add-item-quantity">Quantity:</label>
+                  <input id="add-item-quantity" v-model="item.quantity" type="number" @keyup.enter="addToShoppingCart(item.quantity)"/>
+                  <button v-on:click="addToShoppingCart(item.quantity)">Add to Shopping Cart</button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+    
+          </li>
+        </ul>
       </section>
 
       <aside class="shopping-cart">
-        <h2>Shopping Cart: 0 items</h2>
+        <h2>Shopping Cart: {{totalItems}}</h2>
       </aside>
 
       <h2>Contact Us</h2>
@@ -96,13 +101,20 @@
               inStock: false,
               quantity: 1
             }
-          ]
+          ],
+          totalItems: 0
         },
+
         computed: {
           copyright() {
             const currentYear = new Date().getFullYear()
 
             return `Copyright ${this.restaurantName} ${currentYear}`
+          }
+        },
+        methods: {
+          addToShoppingCart(quantity) {
+            this.totalItems += parseInt(quantity)
           }
         }
       })
